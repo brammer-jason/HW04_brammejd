@@ -42,38 +42,31 @@ void HW04App::setup()
 
 	while(!in.eof()){
 		Entry *newEntry = new Entry;
-		getline(in, line, ',');
-		newEntry->location = line;
+
+		getline(in, line, ',');			//reads in the location information as a string
+		newEntry->location = line;		//puts that location into a new Entry
 
 		double x1;
-		in >> x1;
-		in.get();
-		newEntry->x = x1;
+		in >> x1;			//this will read in until it hits the , as a double
+		in.get();			//this clears out the , that is left over
+		newEntry->x = x1;	//puts the x value into the Entry
 
-		double y1;
-		in >> y1;
+		double y1;			//rinse/repeat of above except for y value
+		in >> y1;			
 		in.get();
 		newEntry->y = y1;
 		
-		list.push_back(*newEntry);
+		list.push_back(*newEntry);	//puts our Entry into the Vector of Entries.
 	}
 
 	for(int i = 0; i < list.size(); i++){
+		//this just tests looping ability of the vector and for data correctness
 		console() << list[i].location << " " << list[i].x << " " << list[i].y << std::endl;
 	}
 
 
 	
 }
-
-double HW04App::string_to_double(const string& s)
-{
-	istringstream i(s);
-	double d;
-	if(!(i >> d)) return 0;
-	return d;
-}
-
 
 void HW04App::mouseDown( MouseEvent event )
 {
