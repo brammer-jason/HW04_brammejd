@@ -81,17 +81,19 @@ void HW04App::setup()
 	}
 	console() << list.size() << std::endl;
 	brammejd_Starbucks* starbucks = new brammejd_Starbucks();
-	starbucks->build(entryArray*, list.size());
+	starbucks->build(entryArray, list.size());
 	
 }
 
 void HW04App::populateGrid(){
-	double stX, stY = 0.0;
-	double endX, endY = 0.1;
+	double stX = 0.0;
+	double stY = 0.0;
+	double endX = 0.1;
+	double endY = 0.1;
 	int counter = 0;
 
 	for(int i=0; i < 100; i++){
-		GridItem* newGrid;
+		GridItem* newGrid = new GridItem;
 		newGrid->startX = stX;
 		newGrid->stopX = endX;
 		newGrid->startY = stY;

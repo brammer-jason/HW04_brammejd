@@ -1,52 +1,73 @@
 #include <Starbucks.h>
-#include <vector>
+#include <Resources.h>
 
-
-using namespace ci;
-using namespace ci::app;
 using namespace std;
 
 struct node {
 	node* left;
 	node* right;
 	Entry* entry;
+	node();
+	node(Entry* e);
 };
+
+node::node(Entry* e){
+	left = right = NULL;
+	entry = e;
+}
+
+node::node(){
+	left = right = NULL;
+	entry = NULL;
+}
 
 class brammejd_Starbucks : public Starbucks
 {
 public:
 	void build(Entry* c, int n);
 	Entry* getNearest(double x, double y);
-	void insert(Entry* entry, node* node);
+	node* insert(Entry* entry, node* node);
+	Entry* sentinelEntry;
+
+private:
 	node* sentinelNode;
+	Entry* e;
+	double x;
+	double y;
 };
 
 void brammejd_Starbucks::build(Entry* c, int n)
 {
-	sentinelNode->entry->x = 0.5;
-	sentinelNode->entry->identifier = "sentinel";
-	sentinelNode->entry->y = NULL;
-	
-	
+
+	sentinelEntry = new Entry;
+	sentinelEntry->identifier = "Sentinel";
+	sentinelEntry->x = 0.5;
+	sentinelEntry->y = NULL;
+			
+	sentinelNode = new node(c);
+
+
+
+
 	for(int i = 0; i < n; i++){
-		Entry* entryToAdd = new Entry(c[i]*);
-		insert(c[i]*, sentinelNode*);
+
+		insert(&c[i], sentinelNode);
 
 	}
 }
 
-void brammejd_Starbucks::insert(Entry* entry, node* node)
+node* brammejd_Starbucks::insert(Entry* entry, node* node)
 {
 	if(node == NULL) {
-		node->entry = entry;
-		return;
+		return new node(entry);
 	}else if(node->entry->x == entry->x && node->entry->y == entry->y){
-		return;
+		return node;
 	}else if(entry->x < node->entry->x){
-		insert(entry, node->left);
+		return insert(entry, node->left);
 	} else {
-		insert(entry, node->right);
+		return insert(entry, node->right);
 	}
+	return node;
 }
 
 Entry* brammejd_Starbucks::getNearest(double x, double y)
