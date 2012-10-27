@@ -3,17 +3,20 @@
 #include <fstream>
 #include <sstream>
 #include <vector>
+#include <Starbucks.h>
+#include <brammejd_Starbucks.h>
 
 using namespace ci;
 using namespace ci::app;
 using namespace std;
 
-
-class Entry{
-public:
-	string location;
-	double x;
-	double y;
+struct GridItem{
+	double startX;
+	double stopX;
+	double startY;
+	double stopY;
+	bool empty;
+	double boxSize;
 };
 
 class HW04App : public AppBasic {
@@ -22,14 +25,18 @@ class HW04App : public AppBasic {
 	void mouseDown( MouseEvent event );	
 	void update();
 	void draw();
-	double string_to_double(const string& s);
+	void populateGrid();
+	double boxCalc(GridItem* item);
+	vector<Entry> list;
+	vector<GridItem> Gridlist;
+	
 };
 
 void HW04App::setup()
 {
 
 	fstream in("Starbucks_2006.csv");
-	vector<Entry> list;
+
 	//vector<Entry> entryList;
 	string line = "not changed";
 
@@ -39,12 +46,18 @@ void HW04App::setup()
 		console() << "failed to open file" << std::endl;
 		return;
 	} 
-
+	/*
+	Entry *sentinelEntry = new Entry;
+	sentinelEntry->x = 0.5;
+	sentinelEntry->y = NULL;
+	sentinelEntry->identifier = "Sentinel";
+	list.push_back(*sentinelEntry);
+	*/
 	while(!in.eof()){
 		Entry *newEntry = new Entry;
 
 		getline(in, line, ',');			//reads in the location information as a string
-		newEntry->location = line;		//puts that location into a new Entry
+		newEntry->identifier = line;	//puts that location into a new Entry
 
 		double x1;
 		in >> x1;			//this will read in until it hits the , as a double
@@ -59,13 +72,49 @@ void HW04App::setup()
 		list.push_back(*newEntry);	//puts our Entry into the Vector of Entries.
 	}
 
+	Entry* entryArray = new Entry[list.size()];
+
 	for(int i = 0; i < list.size(); i++){
 		//this just tests looping ability of the vector and for data correctness
-		console() << list[i].location << " " << list[i].x << " " << list[i].y << std::endl;
+		console() << list[i].identifier << " " << list[i].x << " " << list[i].y << std::endl;
+		entryArray[i] = list[i];
 	}
-
-
+	console() << list.size() << std::endl;
+	brammejd_Starbucks* starbucks = new brammejd_Starbucks();
+	starbucks->build(entryArray*, list.size());
 	
+}
+
+void HW04App::populateGrid(){
+	double stX, stY = 0.0;
+	double endX, endY = 0.1;
+	int counter = 0;
+
+	for(int i=0; i < 100; i++){
+		GridItem* newGrid;
+		newGrid->startX = stX;
+		newGrid->stopX = endX;
+		newGrid->startY = stY;
+		newGrid->stopY = endY;
+
+		if(counter < 10){
+			stX = stX + 0.1;
+			endX = endX + 0.1;
+		} else {
+			stX = 0.0;
+			endX = 0.1;
+			stY = stY + 0.1;
+			endY = endY + 0.1;
+		}
+
+		Gridlist.push_back(*newGrid);
+	}
+}
+
+//void Starbucks::build(Entry* entry, int list.size()0:
+
+double HW04App::boxCalc(GridItem* item){
+	return 0.0;
 }
 
 void HW04App::mouseDown( MouseEvent event )
