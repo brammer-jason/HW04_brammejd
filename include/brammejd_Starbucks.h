@@ -59,7 +59,7 @@ void brammejd_Starbucks::build(Entry* c, int n)
 node* brammejd_Starbucks::insert(Entry* entry, node* node)
 {
 	if(node == NULL) {
-		return new node(entry);
+		return new node(entry); //ERROR
 	}else if(node->entry->x == entry->x && node->entry->y == entry->y){
 		return node;
 	}else if(entry->x < node->entry->x){
