@@ -63,9 +63,9 @@ node* brammejd_Starbucks::insert(Entry* entry, node* node)
 	}else if(node->entry->x == entry->x && node->entry->y == entry->y){
 		return node;
 	}else if(entry->x < node->entry->x){
-		return insert(entry, node->left);
+		node->left = insert(entry, node->left);
 	} else {
-		return insert(entry, node->right);
+		node-> right = insert(entry, node->right);
 	}
 	return node;
 }
