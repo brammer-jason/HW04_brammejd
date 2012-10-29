@@ -21,48 +21,39 @@ class HW04App : public AppBasic {
 	void mouseDown( MouseEvent event );	
 	void update();
 	void draw();
-	void populateGrid();
 	void readFromFile();
 	void convertVectorToArray();
-	double boxCalc();
 	vector<Entry> list;
 	brammejd_Starbucks starbucks;
-
 	Entry* entryArray;
 };
 
 void HW04App::setup()
 {
-	console() << "ReadFromFile" << std::endl;
 	readFromFile();
-	console() << "convertVectorToArray" << std::endl;
 	convertVectorToArray();
-
-	console() << "Build" << std::endl;
 	starbucks.build(entryArray, list.size());
-
-	console() << "going into closest entry" << std::endl;
-	console() << starbucks.getNearest(0.0, 0.0)->identifier << std::endl;
-
+	Entry* closestSB = starbucks.getNearest(0.24, 0.308);
+	console() << closestSB->identifier << " " << closestSB->x << " " << closestSB->y << std::endl;
 }
 
+/*
+ *converts the vector that was created into an Array for requirement purposes
+ */
 void HW04App::convertVectorToArray(){
 	entryArray = new Entry[list.size()];
 	
 	for(int i = 0; i < list.size(); i++){
 		entryArray[i] = list[i];
-		console() << entryArray[i].identifier << ", " << entryArray[i].x << ", " << entryArray[i].y << std::endl;
+		//console() << entryArray[i].identifier << ", " << entryArray[i].x << ", " << entryArray[i].y << std::endl;
 	}
 }
 
 void HW04App::readFromFile(){
-	
+	//creates an fstream to read from the file of locations
 	fstream in("Starbucks_2006.csv");
 
-	//vector<Entry> entryList;
-	string line = "not changed";
-
-	int counter = 0;
+	string line;
 
 	if(!in.is_open()){
 		console() << "failed to open file" << std::endl;
@@ -87,14 +78,8 @@ void HW04App::readFromFile(){
 		
 		list.push_back(*newEntry);	//puts our Entry into the Vector of Entries.
 	}
-}
 
-
-
-//void Starbucks::build(Entry* entry, int list.size()0:
-
-double HW04App::boxCalc(){
-	return 0.0;
+	in.close();
 }
 
 void HW04App::mouseDown( MouseEvent event )
