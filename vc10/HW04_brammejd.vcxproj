@@ -104,6 +104,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\brammejd_Starbucks.cpp" />
     <ClCompile Include="..\src\HW04_brammejdApp.cpp" />
   </ItemGroup>
   <ItemGroup>

@@ -1,3 +1,8 @@
+/*
+ *Jason Brammer CSE274
+ *This program uses the speed of a binary search tree to locate x values in a given range quickly and then
+ *"brute forces" that smaller data set until it finds the closest point.
+*/
 #include "cinder/app/AppBasic.h"
 #include "cinder/gl/gl.h"
 #include <fstream>
@@ -10,15 +15,6 @@ using namespace ci;
 using namespace ci::app;
 using namespace std;
 
-struct GridItem{
-	double startX;
-	double stopX;
-	double startY;
-	double stopY;
-	bool empty;
-	double boxSize;
-};
-
 class HW04App : public AppBasic {
   public:
 	void setup();
@@ -26,15 +22,41 @@ class HW04App : public AppBasic {
 	void update();
 	void draw();
 	void populateGrid();
-	double boxCalc(GridItem* item);
+	void readFromFile();
+	void convertVectorToArray();
+	double boxCalc();
 	vector<Entry> list;
-	vector<GridItem> Gridlist;
-	
+	brammejd_Starbucks starbucks;
+
+	Entry* entryArray;
 };
 
 void HW04App::setup()
 {
+	console() << "ReadFromFile" << std::endl;
+	readFromFile();
+	console() << "convertVectorToArray" << std::endl;
+	convertVectorToArray();
 
+	console() << "Build" << std::endl;
+	starbucks.build(entryArray, list.size());
+
+	console() << "going into closest entry" << std::endl;
+	console() << starbucks.getNearest(0.0, 0.0)->identifier << std::endl;
+
+}
+
+void HW04App::convertVectorToArray(){
+	entryArray = new Entry[list.size()];
+	
+	for(int i = 0; i < list.size(); i++){
+		entryArray[i] = list[i];
+		console() << entryArray[i].identifier << ", " << entryArray[i].x << ", " << entryArray[i].y << std::endl;
+	}
+}
+
+void HW04App::readFromFile(){
+	
 	fstream in("Starbucks_2006.csv");
 
 	//vector<Entry> entryList;
@@ -46,13 +68,7 @@ void HW04App::setup()
 		console() << "failed to open file" << std::endl;
 		return;
 	} 
-	/*
-	Entry *sentinelEntry = new Entry;
-	sentinelEntry->x = 0.5;
-	sentinelEntry->y = NULL;
-	sentinelEntry->identifier = "Sentinel";
-	list.push_back(*sentinelEntry);
-	*/
+
 	while(!in.eof()){
 		Entry *newEntry = new Entry;
 
@@ -71,51 +87,13 @@ void HW04App::setup()
 		
 		list.push_back(*newEntry);	//puts our Entry into the Vector of Entries.
 	}
-
-	Entry* entryArray = new Entry[list.size()];
-
-	for(int i = 0; i < list.size(); i++){
-		//this just tests looping ability of the vector and for data correctness
-		console() << list[i].identifier << " " << list[i].x << " " << list[i].y << std::endl;
-		entryArray[i] = list[i];
-	}
-	console() << list.size() << std::endl;
-	brammejd_Starbucks* starbucks = new brammejd_Starbucks();
-	starbucks->build(entryArray, list.size());
-	
 }
 
-void HW04App::populateGrid(){
-	double stX = 0.0;
-	double stY = 0.0;
-	double endX = 0.1;
-	double endY = 0.1;
-	int counter = 0;
 
-	for(int i=0; i < 100; i++){
-		GridItem* newGrid = new GridItem;
-		newGrid->startX = stX;
-		newGrid->stopX = endX;
-		newGrid->startY = stY;
-		newGrid->stopY = endY;
-
-		if(counter < 10){
-			stX = stX + 0.1;
-			endX = endX + 0.1;
-		} else {
-			stX = 0.0;
-			endX = 0.1;
-			stY = stY + 0.1;
-			endY = endY + 0.1;
-		}
-
-		Gridlist.push_back(*newGrid);
-	}
-}
 
 //void Starbucks::build(Entry* entry, int list.size()0:
 
-double HW04App::boxCalc(GridItem* item){
+double HW04App::boxCalc(){
 	return 0.0;
 }
 
