@@ -5,11 +5,17 @@
 node::node(){
 	left = right = NULL;
 	entry = NULL;
+	c->b = 0;
+	c->g = 0;
+	c->r = 0;
 }
 
 node::node(Entry* e){
 	left = right = NULL;
 	entry = e;
+	c->b = 0;
+	c->g = 0;
+	c->r = 0;
 }
 
 /*
@@ -48,6 +54,7 @@ void brammejd_Starbucks::build(Entry* c, int n)
 	copyEntries = new Entry[n];
 
 	for(int i = 0; i < n; i++){
+		
 		double x1 = c[i].x;
 		double y1 = c[i].y;
 		string id = c[i].identifier;
@@ -60,6 +67,7 @@ void brammejd_Starbucks::build(Entry* c, int n)
 	c = copyEntries;
 
 	sentinelNode = new node(c);
+
 	for(int i = 0; i < n; i++){
 		insert(&copyEntries[i], sentinelNode);
 	}
@@ -160,4 +168,25 @@ Entry* brammejd_Starbucks::searchTree(double boxSize, double x, double y, node* 
  */
 double brammejd_Starbucks::calcDistance(double x1, double x2, double y1, double y2){
 	return sqrt((x1 - x2)*(x1 - x2) + (y1 - y2)*(y1 - y2));
+}
+
+void brammejd_Starbucks::drawStarbucks(uint8_t* dataArray){
+	drawSBNodes(dataArray, sentinelNode);
+}
+
+void brammejd_Starbucks::drawSBNodes(uint8_t* dataArray, node* n){
+	if(n == NULL) return;
+
+	drawSBNodes(dataArray, n->left);
+	drawSBNodes(dataArray, n->right);
+
+	int scaledX = n->entry->x * AppWidth;
+	int scaledY = n->entry->y * AppHeight;
+
+	int offset = 3*(scaledX + scaledY*TEXTURESIZE);
+
+	dataArray[offset] = n->c->r;
+	dataArray[offset + 1] = n->c->b;
+	dataArray[offset + 2] = n->c->g;
+
 }

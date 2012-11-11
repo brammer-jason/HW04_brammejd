@@ -1,16 +1,25 @@
 #pragma once
+
+#define TEXTURESIZE 1024
+#define AppWidth 800
+#define AppHeight 800
+
 #include <cinder/app/App.h>
 #include <Starbucks.h>
 #include <Resources.h>
 #include <vector>
+#include "cinder/app/AppBasic.h"
+#include "cinder/gl/gl.h"
+#include "cinder/Color.h"
 
-
+using namespace ci;
 using namespace std;
 
 struct node {
 	node* left;
 	node* right;
 	Entry* entry;
+	Color8u* c;
 
 	node();
 	node(Entry* e);
@@ -18,6 +27,7 @@ struct node {
 
 class brammejd_Starbucks : public Starbucks {
 public:
+	
 	/*
 	 *builds the binary tree using the passed in array of entries c and c's size
 	*/
@@ -27,6 +37,8 @@ public:
 	 *returns the nearest Starbucks location relative to the one entered
 	*/
 	Entry* getNearest(double x, double y);
+
+	void drawStarbucks(uint8_t* dataArray);
 
 private:
 	/*
@@ -46,6 +58,8 @@ private:
 	 *inserts a new node into the binary search tree (sorted on x values!!)
 	*/
 	node* insert(Entry* entry, node* newNode);
+
+	void drawSBNodes(uint8_t* dataArray, node* n);
 
 	node* sentinelNode; //the first node in the binary search tree.
 	int numEntries; 

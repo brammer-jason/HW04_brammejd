@@ -108,6 +108,7 @@
     <ClCompile Include="..\src\HW04_brammejdApp.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\include\brammejd_HW04App.h" />
     <ClInclude Include="..\include\brammejd_Starbucks.h" />
     <ClInclude Include="..\include\Resources.h" />
     <ClInclude Include="..\include\Starbucks.h" />

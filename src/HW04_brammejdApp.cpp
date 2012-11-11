@@ -3,38 +3,41 @@
  *This program uses the speed of a binary search tree to locate x values in a given range quickly and then
  *"brute forces" that smaller data set until it finds the closest point.
 */
-#include "cinder/app/AppBasic.h"
-#include "cinder/gl/gl.h"
-#include <fstream>
-#include <sstream>
-#include <vector>
-#include <Starbucks.h>
-#include <brammejd_Starbucks.h>
 
-using namespace ci;
-using namespace ci::app;
-using namespace std;
+#include <brammejd_HW04App.h>
 
-class HW04App : public AppBasic {
-  public:
-	void setup();
-	void mouseDown( MouseEvent event );	
-	void update();
-	void draw();
-	void readFromFile();
-	void convertVectorToArray();
-	vector<Entry> list;
-	brammejd_Starbucks starbucks;
-	Entry* entryArray;
-};
+void HW04App::prepareSettings(Settings* settings){
+	(*settings).setWindowSize(AppWidth, AppHeight);
+	(*settings).setResizable(false);
+}
 
 void HW04App::setup()
 {
+	mySurface = new Surface(TEXTURESIZE, TEXTURESIZE, false);
+	dataArray = mySurface->getData();
+
+	drawNodes = true;
+	BGColor = Color8u(255,255,255);
+	SBColor = Color8u(0,0,0);
+
 	readFromFile();
 	convertVectorToArray();
 	starbucks.build(entryArray, list.size());
 	Entry* closestSB = starbucks.getNearest(0.24, 0.308);
 	console() << closestSB->identifier << " " << closestSB->x << " " << closestSB->y << std::endl;
+}
+
+void HW04App::update()
+{
+	if(drawNodes){
+		gl::clear(Color(255,255,255));
+	}
+}
+
+void HW04App::draw()
+{
+	// clear out the window with black
+	
 }
 
 /*
@@ -86,14 +89,6 @@ void HW04App::mouseDown( MouseEvent event )
 {
 }
 
-void HW04App::update()
-{
-}
 
-void HW04App::draw()
-{
-	// clear out the window with black
-	gl::clear( Color( 0, 0, 0 ) ); 
-}
 
 CINDER_APP_BASIC( HW04App, RendererGl )
