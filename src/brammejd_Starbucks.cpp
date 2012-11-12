@@ -5,18 +5,16 @@
 node::node(){
 	left = right = NULL;
 	entry = NULL;
-	c->b = 0;
-	c->g = 0;
-	c->r = 0;
+	color = new Color8u(0,0,255);
 }
 
 node::node(Entry* e){
 	left = right = NULL;
 	entry = e;
-	c->b = 0;
-	c->g = 0;
-	c->r = 0;
+	color = new Color8u(0,0,255);
 }
+
+
 
 /*
  *inserts an entry into the binary tree
@@ -95,8 +93,7 @@ Entry* brammejd_Starbucks::getNearest(double x, double y)
 	int counter = 0;
 
 	//a local variable to be returned
-	Entry* nearestStarbucks = new Entry();
-	nearestStarbucks = NULL;
+	Entry* nearestStarbucks = NULL;
 
 	bool done = false;
 
@@ -113,7 +110,8 @@ Entry* brammejd_Starbucks::getNearest(double x, double y)
 			done = true;
 		}
 	}
-
+	
+	
 	return nearestStarbucks;
 }
 
@@ -135,7 +133,7 @@ Entry* brammejd_Starbucks::searchTree(double boxSize, double x, double y, node* 
 	//variables are updated accordingly if it is a better point
 	if(sentinel->entry->x <= x + boxSize && sentinel->entry->x >= x - boxSize &&
 	   sentinel->entry->y <= y + boxSize && sentinel->entry->y >= y - boxSize){
-		distance = calcDistance(sentinel->entry->x, x, sentinel->entry->y, y);
+		double distance = calcDistance(sentinel->entry->x, x, sentinel->entry->y, y);
 		if (distance < bestDistance){
 			bestDistance = distance;
 			closestEntry = sentinel->entry;
@@ -181,12 +179,140 @@ void brammejd_Starbucks::drawSBNodes(uint8_t* dataArray, node* n){
 	drawSBNodes(dataArray, n->right);
 
 	int scaledX = n->entry->x * AppWidth;
-	int scaledY = n->entry->y * AppHeight;
+	int scaledY = (1 - n->entry->y) * AppHeight;
 
-	int offset = 3*(scaledX + scaledY*TEXTURESIZE);
+	setPixel(scaledX, scaledY, n->color, dataArray);
+}
 
-	dataArray[offset] = n->c->r;
-	dataArray[offset + 1] = n->c->b;
-	dataArray[offset + 2] = n->c->g;
+void brammejd_Starbucks::setPixel(int x, int y, Color8u* c, uint8_t* dataArray)
+{
+	//Sets a single pixel on the screen to a specified color
+	//setPixel is a dependancy for addLine and addTriangle
+	int offset = 3*(x + y*TEXTURESIZE);
 
+	dataArray[offset] = c->r;
+	dataArray[offset + 1] = c->b;
+	dataArray[offset + 2] = c->g;
+	
+}
+
+void brammejd_Starbucks::drawLine(int x1, int y1, int x2, int y2, Color8u* c, uint8_t* dataArray){
+	//I changed many of the variables to make them more consistant with the naming conventions
+	//I used in this code
+	
+	int F, x, y;
+
+    if (x1 > x2) {  
+		// Swap points if first point is on the right of second point
+		// This alleviates the need for two algorithms, one that writes left to right and one that writes right to left
+        swap(x1, x2);
+        swap(y1, y2);
+    }
+
+    // Handle trivial cases separately for algorithm speed up.
+    // Trivial case 1: m = +/-INF (Vertical line), no special handling required
+    if (x1 == x2) {
+        if (y1 > y2){  
+			// Swap y-coordinates if the first point is above the second point
+            swap(y1, y2);
+        }
+
+        x = x1;
+        y = y1;
+        while (y <= y2) {
+            setPixel(x, y, c, dataArray);
+            y++;
+        }
+        return;
+    }
+    // Trivial case 2: m = 0 (Horizontal line), no special handling required
+    else if (y1 == y2) {
+        x = x1;
+        y = y1;
+
+        while (x <= x2) {
+            setPixel(x, y, c, dataArray);
+            x++;
+        }
+        return;
+    }
+
+    int dy            = y2 - y1;  // y-increment from p1 to p2
+    int dx            = x2 - x1;  // x-increment from p1 to p2
+    int dy2           = (dy << 1);  // dy << 1 == 2*dy
+    int dx2           = (dx << 1);
+    int dy2_minus_dx2 = dy2 - dx2;  // precompute constant for speed up
+    int dy2_plus_dx2  = dy2 + dx2;
+
+    if (dy >= 0){    // What to do if slope >= 0
+        if (dy <= dx) {
+			// Case 1: 0 <= m <= 1 (Original case)
+            F = dy2 - dx;    // initial F
+
+            x = x1;
+            y = y1;
+            while (x <= x2) {
+                setPixel(x, y, c, dataArray);
+                if (F <= 0) {
+                    F += dy2;
+                }
+                else {
+                    y++;
+                    F += dy2_minus_dx2;
+                }
+                x++;
+            }
+        } else {
+			// Case 2: 1 < m < INF (Mirror about y=x line replace all dy by dx and dx by dy)
+            F = dx2 - dy;    // initial F
+
+            y = y1;
+            x = x1;
+            while (y <= y2) {
+                setPixel(x, y, c, dataArray);
+                if (F <= 0) {
+                    F += dx2;
+                } else {
+                    x++;
+                    F -= dy2_minus_dx2;
+                }
+                y++;
+            }
+        }
+    } else {    // What to do if slope < 0
+    
+        // Case 3: -1 <= m < 0 (Mirror about x-axis, replace all dy by -dy)
+        if (dx >= -dy){
+            F = -dy2 - dx;    // initial F
+
+            x = x1;
+            y = y1;
+            while (x <= x2){
+                setPixel(x, y, c, dataArray);
+                if (F <= 0){
+                    F -= dy2;
+                } else {                
+                    y--;
+                    F -= dy2_plus_dx2;
+                }
+                x++;
+            }
+        // Case 4: -INF < m < -1 (Mirror about x-axis and mirror about y=x line, replace all dx by -dy and dy by dx)
+        } else { 
+            F = dx2 + dy;    // initial F
+
+            y = y1;
+            x = x1;
+            while (y >= y2) {
+                setPixel(x, y, c, dataArray);
+                if (F <= 0) {
+                    F += dx2;
+                } else {
+                    x++;
+                    F += dy2_plus_dx2;
+                }
+                y--;
+            }
+        }
+    }
 }

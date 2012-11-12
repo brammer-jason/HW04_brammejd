@@ -1,8 +1,8 @@
 #pragma once
 
 #define TEXTURESIZE 1024
-#define AppWidth 800
-#define AppHeight 800
+#define AppWidth 1024
+#define AppHeight 768
 
 #include <cinder/app/App.h>
 #include <Starbucks.h>
@@ -13,13 +13,14 @@
 #include "cinder/Color.h"
 
 using namespace ci;
+using namespace ci::app;
 using namespace std;
 
 struct node {
 	node* left;
 	node* right;
 	Entry* entry;
-	Color8u* c;
+	Color8u* color;
 
 	node();
 	node(Entry* e);
@@ -38,7 +39,20 @@ public:
 	*/
 	Entry* getNearest(double x, double y);
 
+	/*
+	 *calls the private function drawSBNodes
+	 */
 	void drawStarbucks(uint8_t* dataArray);
+
+	/*
+	 *sets and individual pixel to the pass in color
+	 */
+	void setPixel(int x, int y, Color8u* c, uint8_t* dataArray);
+
+	/*
+	 *draws a line between two points
+	 */
+	void drawLine(int x1, int y1, int x2, int y2, Color8u* c, uint8_t* dataArray);
 
 private:
 	/*
@@ -59,12 +73,17 @@ private:
 	*/
 	node* insert(Entry* entry, node* newNode);
 
+	/*
+	 *called from drawStarbucks() and does all the heavy lifting for drawing
+	 */
 	void drawSBNodes(uint8_t* dataArray, node* n);
+
+
 
 	node* sentinelNode; //the first node in the binary search tree.
 	int numEntries; 
 	Entry* copyEntries; //copy of entries passed to build method
 	Entry* closestEntry; //tracks the closest entry found
-	double distance; //distance to be calculated
+	//double distance; //distance to be calculated
 	double bestDistance; //keeps track of the best distance foudn so far
 };
