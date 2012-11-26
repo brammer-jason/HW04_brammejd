@@ -4,6 +4,19 @@
  *"brute forces" that smaller data set until it finds the closest point.
 */
 
+/*
+	Citation edit: I must apologize as I forgot to cite that I used Cary Willard's zoom code.
+				   I thought that I had cited it but I apparently forgot. I had spoken with Cary during
+				   the office hours at Oxford and I did obtain his permission to use this code. It had to be modified
+				   and I changed some of the variables to have more meaning (at least to myself). Any code in this
+				   .cpp file is in some way derived from Cary Willard's code.
+
+				   For good measure I'm also going to recite the line drawing code. I did cite it in a previous assignment
+				   but it occurs to me that someone not knowing that I had cited it previous and viewing only this code
+				   would have no idea.
+				   The code for creating a line was derived from http://www.codekeep.net/snippets/e39b2d9e-0843-4405-8e31-44e212ca1c45.aspx
+ */
+
 #pragma once
 #include <brammejd_HW04App.h>
 #include "cinder/app/AppBasic.h"
@@ -87,6 +100,7 @@ void HW04App::draw()
 
 /*
  *this draws our screen to whatever the current zoom scale is
+ *Code credit goes to Cary Willard's HW04 zoom methods
  */
 void HW04App::curZoom(){
 	for(int g = 0; g < TEXTURESIZE; g++){
@@ -294,7 +308,7 @@ void HW04App::keyDown( KeyEvent event){
 			drawMap = true;
 		}
 	}
-
+	//Begin code credit to Cary Willard
 	//this will zoom in if the period is pressed
 	if(event.getCode() == KeyEvent::KEY_PERIOD){
 		console() << "Zoom In" << endl;
@@ -341,6 +355,7 @@ void HW04App::keyDown( KeyEvent event){
 			xOffset -= 20;
 		}
 	}
+	//End code credit to Cary Willard
 
 	//backspace forces a redraw
 	if(event.getCode() == KeyEvent::KEY_BACKSPACE){
