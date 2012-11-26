@@ -196,6 +196,15 @@ void brammejd_Starbucks::setPixel(int x, int y, Color8u* c, uint8_t* dataArray)
 	
 }
 
+/**
+ *Adds a line between two given points (A.3)
+ *used http://www.codekeep.net/snippets/e39b2d9e-0843-4405-8e31-44e212ca1c45.aspx as a template
+ *@x1 first point x coordinate
+ *@y1 first point y coordinate
+ *@x2 second point x coordinate
+ *@y2 second point y coordinate
+ *@c color of the line to be drawn
+ */
 void brammejd_Starbucks::drawLine(int x1, int y1, int x2, int y2, Color8u* c, uint8_t* dataArray){
 	//I changed many of the variables to make them more consistant with the naming conventions
 	//I used in this code
